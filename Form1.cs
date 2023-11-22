@@ -32,6 +32,16 @@ namespace AppCuesTranslations
 
         private void SelectFolderButton_Click(object sender, EventArgs e)
         {
+            logLabel.Text = "";
+            if (_translationsResult.Translations == null)
+                _translationsResult.Translations = new List<TranslationKeyResult.Translation>();
+            else if (_translationsResult.Translations.Count > 0)
+                _translationsResult.Translations.Clear();
+            if (_missingInEnglish.Count > 0)
+                _missingInEnglish.Clear();
+            if (_translationMissing.Count > 0)
+                _translationMissing.Clear();
+
             GetSettings();
 
             if (_settings.LokaliseToken == null || _settings.LokaliseProjectId == null)
@@ -46,6 +56,8 @@ namespace AppCuesTranslations
                 try
                 {
                     string[] files = Directory.GetFiles(folderBrowserDialog.SelectedPath, "*.json");
+
+                    filesListBox.Items.Clear();
 
                     foreach (string file in files)
                     {
@@ -115,9 +127,6 @@ namespace AppCuesTranslations
                 logLabel.Text += "Translations fetched.\n";
 
                 var result = JsonSerializer.Deserialize<TranslationKeyResult>(response.Content);
-
-                if (_translationsResult.Translations == null)
-                    _translationsResult.Translations = new List<TranslationKeyResult.Translation>();
 
                 _translationsResult.Translations.AddRange(result.Translations);
 
